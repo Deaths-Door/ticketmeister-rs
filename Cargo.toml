@@ -1,0 +1,21 @@
+[package]
+name = "ticketmeister"
+version = "0.1.0"
+edition = "2021"
+readme = "README.md"
+authors = ["Aarav Shah <aaravaditya51@gmail.com>"]
+description = "A lightweight and intuitive library for accessing ticket master api in rust"
+documentation = "https://docs.rs/musixmatch"
+repository = "https://github.com/Deaths-Door/ticketmeister-rs"
+homepage = "https://github.com/Deaths-Door/ticketmeister-rs"
+license = "MIT OR Apache-2.0"
+keywords = ["ticketmaster","api","concerts","search","music"]
+
+[dependencies]
+api-request-utils-rs =  "0.1.9"
+
+# Cuz im lazy 
+strum = { version = "0.25", features = ["derive"] }
+
+[features]
+discovery = []
