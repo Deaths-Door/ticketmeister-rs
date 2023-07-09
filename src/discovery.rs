@@ -18,6 +18,8 @@ use crate::{
     Segment
 };
 
+add custom logic to handle _links , _embedeed correctly
+
 pub struct Discovery<'a> {
     client : Client,
     api_key : &'a str,
@@ -45,6 +47,7 @@ impl RequestDefaults for Discovery<'_> {
 
 impl RequestHandler for Discovery<'_> {}
 
+//todo add embeeded stuff if wanted
 impl<'a> Discovery<'a> {
     pub fn new(api_key : &'a str,error_resolver : &'a dyn Fn(&RequestError<Value>)) -> Self {
         let client = Client::new();
@@ -111,4 +114,12 @@ impl<'a> Discovery<'a> {
         self.details("classifications/segment",id,locale,domain).await
     }
 
+    pub async fn event_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Event<'a>> {
+        self.details("events",id,locale,domain).await
+    }
+
+    /*pub async fn event_images(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Vec<ImageInfo<'a>>> {
+        let format = format!("events/{}",id);
+        self.details(&format,"images",locale,domain)
+    }*/
 }

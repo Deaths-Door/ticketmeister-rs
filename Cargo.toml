@@ -14,8 +14,5 @@ keywords = ["ticketmaster","api","concerts","search","music"]
 [dependencies]
 api-request-utils-rs =  "0.1.9"
 
-# Cuz im lazy 
-strum = { version = "0.25", features = ["derive"] }
-
 [features]
 discovery = []
