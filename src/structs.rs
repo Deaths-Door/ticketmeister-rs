@@ -98,6 +98,18 @@ pub struct Event<'a> {
     /// Price ranges of this event
     #[serde(rename = "priceRanges")]
     pub price_ranges : Vec<Price<'a>>,
+
+    pub classifications: Vec<Classification<'a>>,
+
+    pub promoter: Promoter,
+    pub promoters: Vec<Promoter2>,
+    pub products: Vec<Product>,
+    pub seatmap: Seatmap,
+    pub accessibility: Accessibility,
+    pub ticket_limit: TicketLimit,
+    pub age_restrictions: AgeRestrictions,
+    pub ticketing: Ticketing,
+
 }
 
 #[derive(Serialize,Deserialize)]
