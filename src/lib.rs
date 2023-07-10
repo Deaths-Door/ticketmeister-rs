@@ -1,38 +1,29 @@
-use api_request_utils_rs::{
-    RequestInfo,
-    RequestModifiers,
-    RequestDefaults,
-    RequestHandler,
-    RequestError,
-    reqwest::{
-        Client,
-        RequestBuilder,
-    },
-};
-//TODO add discovery feature for this instead
+#![doc = include_str!("../README.md")]
 
-pub struct Discovery<'a> {
-    client : Client,
-    api_key : &'a str,
-}
+#![forbid(
+    missing_docs,
 
-impl RequestInfo for Discovery<'_> {
-    const BASE_URL : &'static str = " https://app.ticketmaster.com/discovery/v2";
-}
+    unsafe_code,
+    
+    unused_imports,
+    unused_variables,
+    unused_mut,
+    unused_results,
+    unused_allocation,
+    unused_must_use,
+    unused_import_braces,
 
-impl RequestModifiers for Discovery<'_> {
-    fn create_endpoint(endpoint: &str) -> String {
-        format!("{}/{}.json",Self::BASE_URL,endpoint)
-    }
-}
+    unreachable_patterns,
 
-impl RequestDefaults for Discovery<'_> { 
-    fn client(&self) -> &Client {
-        &self.client
-    }
-    fn default_parameters(&self,request_builder: RequestBuilder) -> RequestBuilder {
-        request_builder.query(&[("apikey", self.api_key)])
-    }
-}
+    trivial_casts,
 
-impl RequestHandler for Discovery<'_> {}
+    unsafe_op_in_unsafe_fn,
+    
+    overflowing_literals,
+)]
+
+#[cfg(feature = "inventory")]
+mod inventory;
+
+#[cfg(feature = "inventory")]
+pub use self::inventory::*;
