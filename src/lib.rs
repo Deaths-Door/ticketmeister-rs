@@ -22,6 +22,12 @@
     overflowing_literals,
 )]
 
+mod structs;
+mod enums;
+
+pub use self::structs::*;
+pub use self::enums::*;
+
 #[cfg(feature = "inventory")]
 mod inventory;
 

@@ -12,4 +12,7 @@ license = "MIT OR Apache-2.0"
 keywords = ["ticketmaster","api","concerts","search","music"]
 
 [dependencies]
-api-request-utils-rs =  "0.1.9"
+api-request-utils-rs =  "0.2.0"
+
+[features]
+inventory = []
