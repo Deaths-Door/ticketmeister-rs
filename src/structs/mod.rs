@@ -1,11 +1,11 @@
 #[cfg(feature = "inventory")]
-mod inventory;
+mod inventory_structs;
 
 #[cfg(feature = "discovery")]
-mod discovery;
+mod discovery_structs;
 
 #[cfg(feature = "inventory")]
-pub use self::inventory::*;
+pub use self::inventory_structs::*;
 
 #[cfg(feature = "discovery")]
-pub use self::discovery::*;
+pub use self::discovery_structs::*;

@@ -1,11 +1,17 @@
 #[cfg(feature = "inventory")]
-mod inventory;
+mod inventory_enums;
 
 #[cfg(feature = "discovery")]
-mod discovery;
+mod discovery_enums;
+
+#[cfg(feature = "discovery")]
+mod from;
 
 #[cfg(feature = "inventory")]
-pub use self::inventory::*;
+pub use self::inventory_enums::*;
 
 #[cfg(feature = "discovery")]
-pub use self::discovery::*;
+pub use self::discovery_enums::*;
+
+#[cfg(feature = "discovery")]
+pub use self::from::*;

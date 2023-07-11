@@ -13,11 +13,20 @@ use api_request_utils_rs::{
         RequestBuilder,
     },
 
-    serde_json::Value
+    serde_json::{
+        Value,
+        from_value
+    }
 };
 
 use crate::{
-    Image
+  //  Image,
+    Genre,
+    SubGenre,
+    Segment,
+    Page,
+    
+    SearchQuery
 };
 
 impl RequestInfo for Discovery<'_> {
@@ -49,6 +58,7 @@ pub struct Discovery<'a> {
     error_handler : &'a ErrorHandler<Value>
 }
 
+/// TODO add  The API provides access to content sourced from various platform, including Ticketmaster, Universe, FrontGate Tickets and Ticketmaster Resale (TMR). By default, the API returns events from all sources. To specify a specifc source(s), use the &source= parameter. Multiple, comma separated values are OK.
 impl<'a> Discovery<'a> {
     /// Creates a new `Discovery` instance.
     ///
@@ -71,9 +81,32 @@ impl<'a> Discovery<'a> {
         }
     }
 
+    fn embedded(value : Value) -> Value {
+        value.get("_embedded").unwrap()
+    }
+    
     async fn details<T>(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<T> where T: api_request_utils_rs::serde::de::DeserializeOwned {
         let joined_endpoint = format!("{}/{}",endpoint,id);
         let parameters = HashMap::from([("locale",Value::from(locale)),("domain",Value::from(domain))]);
         self.get_request_handler(&joined_endpoint, parameters, self.error_handler).await
+    }
+
+    pub async fn event_search(&self,query : SearchQuery<'_>) -> (Page,Vec<Event>) {
+        let value = self.get_request_handler::<Value,Value>("events",query.hashmap());
+        let page = from_value::<Page>(value.get("page").unwrap()).unwrap();
+        let events = from_value::<Vec<Event>>(value.embedded().get("events").unwrap()).unwrap();
+        (events,page)
+    }
+
+    pub async fn genre_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Genre> {
+        self.details("classifications/genres",id,locale,domain).await
+    }
+
+    pub async fn sub_genre_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<SubGenre> {
+        self.details("classifications/subgenres",id,locale,domain).await
+    }
+
+    pub async fn segment_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Segment> {
+        self.details("classifications/segment",id,locale,domain).await
     }
 }
