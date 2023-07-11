@@ -2,22 +2,12 @@
 
 [![Crates.io](https://img.shields.io/crates/v/my_crate.svg)](https://crates.io/crates/ticketmeister)
 [![Docs.rs](https://docs.rs/my_crate/badge.svg)](https://docs.rs/ticketmeister)
-[![License](https://img.shields.io/crates/l/ticketmeister.svg)](https://github.com/Deaths-Door/ticketmeister-rs/blob/main/LICENSE)
 
 This repository provides a Rust implementation for integrating the Ticketmaster API into your projects. With this implementation, developers can effortlessly access and utilize Ticketmaster's powerful features for building efficient and feature-rich ticketing and event management applications
 
-## About
-
-...
-
 ## Features
 
-- 'inventory' : Enables usage of the [Inventory API](https://developer.ticketmaster.com/products-and-docs/apis/inventory-status/)
-
-
-## Installation
-
-... 
+- 'inventory' : Enables usage of the [Inventory API](https://developer.ticketmaster.com/products-and-docs/apis/inventory-status/) which  provides event status for primary Ticketmaster inventory with inventory updates happening near real-time.
 
 ## Usage
 

@@ -5,29 +5,32 @@ use api_request_utils_rs::{
     RequestModifiers,
     RequestDefaults,
     RequestHandler,
-    RequestError,
+
+    ErrorHandler,
+    
     reqwest::{
         Client,
         RequestBuilder,
     },
+
+    serde_json::{
+        Value,
+        from_value
+    }
 };
 
 use crate::{
+  //  Image,
     Genre,
     SubGenre,
-    Segment
+    Segment,
+    Page,
+    
+    SearchQuery
 };
 
-add custom logic to handle _links , _embedeed correctly
-
-pub struct Discovery<'a> {
-    client : Client,
-    api_key : &'a str,
-    error_resolver : Box<&'a dyn Fn(../* TODO decide type */)>
-}
-
 impl RequestInfo for Discovery<'_> {
-    const BASE_URL : &'static str = " https://app.ticketmaster.com/discovery/v2";
+    const BASE_URL : &'static str = "https://app.ticketmaster.com/discovery/v2";
 }
 
 impl RequestModifiers for Discovery<'_> {
@@ -40,6 +43,7 @@ impl RequestDefaults for Discovery<'_> {
     fn client(&self) -> &Client {
         &self.client
     }
+    
     fn default_parameters(&self,request_builder: RequestBuilder) -> RequestBuilder {
         request_builder.query(&[("apikey", self.api_key)])
     }
@@ -47,79 +51,62 @@ impl RequestDefaults for Discovery<'_> {
 
 impl RequestHandler for Discovery<'_> {}
 
-//todo add embeeded stuff if wanted
+/// The Ticketmaster Discovery API allows you to search for events, attractions, or venues.
+pub struct Discovery<'a> {
+    client : Client,
+    api_key : &'a str,
+    error_handler : &'a ErrorHandler<Value>
+}
+
+/// TODO add  The API provides access to content sourced from various platform, including Ticketmaster, Universe, FrontGate Tickets and Ticketmaster Resale (TMR). By default, the API returns events from all sources. To specify a specifc source(s), use the &source= parameter. Multiple, comma separated values are OK.
 impl<'a> Discovery<'a> {
-    pub fn new(api_key : &'a str,error_resolver : &'a dyn Fn(&RequestError<Value>)) -> Self {
+    /// Creates a new `Discovery` instance.
+    ///
+    /// This method takes an API key and an error handler, and initializes
+    /// a `Client` instance internally for making API requests.
+    pub fn new(api_key: &'a str, error_handler: &'a ErrorHandler<Value>) -> Self {
         let client = Client::new();
-        Self { client , api_key , error_resolver : Box::new(error_resolver)}
+        Self::new_with_client(client, api_key, error_handler)
     }
 
-    async fn details<T>(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<T> {
-        let endpoint = format!("{}/{}",endpoint,id);
-        let parameters = HashMap::from([("locale",locale),("domain",domain)]);
-        Self::request(self.default_get_requestor(&endpoint, parameters)).await
+    /// Creates a new `Discovery` instance with a specific `Client` instance.
+    ///
+    /// This method allows you to provide a pre-existing `Client` instance for making API requests,
+    /// along with an API key and an error handler.
+    pub fn new_with_client(client: Client, api_key: &'a str, error_handler: &'a ErrorHandler<Value>) -> Self {
+        Self {
+            client,
+            api_key,
+            error_handler,
+        }
     }
 
-    /// Get Genre Details
-    ///
-    /// Get details for a specific genre using its unique identifier.
-    ///
-    /// # Endpoint
-    /// `/discovery/v2/classifications/genres/{id}`
-    ///
-    /// ## Parameters
-    ///
-    /// - `id` : ID of the genre.
-    ///
-    /// - `locale` : The locale in ISO code format. Multiple comma-separated values can be provided. When omitting the country part of the code (e.g., only 'en' or 'fr'), then the first matching locale is used. When using a '*' it matches all locales. '*' can only be used at the end (e.g., 'en-us,en,*').
-    ///
-    /// - `domain`: Filter entities based on domains they are available on.
-    pub async fn genre_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Genre<'a>> {
+    fn embedded(value : Value) -> Value {
+        value.get("_embedded").unwrap()
+    }
+    
+    async fn details<T>(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<T> where T: api_request_utils_rs::serde::de::DeserializeOwned {
+        let joined_endpoint = format!("{}/{}",endpoint,id);
+        let parameters = HashMap::from([("locale",Value::from(locale)),("domain",Value::from(domain))]);
+        self.get_request_handler(&joined_endpoint, parameters, self.error_handler).await
+    }
+
+    pub async fn event_search(&self,query : SearchQuery<'_>) -> (Page,Vec<Event>) {
+        let value = self.get_request_handler::<Value,Value>("events",query.hashmap());
+        let page = from_value::<Page>(value.get("page").unwrap()).unwrap();
+        let events = from_value::<Vec<Event>>(value.embedded().get("events").unwrap()).unwrap();
+        (events,page)
+    }
+
+    pub async fn genre_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Genre> {
         self.details("classifications/genres",id,locale,domain).await
     }
 
-    /// Get Sub-Genre Details
-    ///
-    /// Get details for a specific sub-genre using its unique identifier.
-    ///
-    /// # Endpoint
-    /// `/discovery/v2/classifications/subgenres/{id}`
-    ///
-    /// ## Parameters
-    ///
-    /// - `id` : ID of the sub-genre.
-    ///
-    /// - `locale` : The locale in ISO code format. Multiple comma-separated values can be provided. When omitting the country part of the code (e.g., only 'en' or 'fr'), then the first matching locale is used. When using a '*' it matches all locales. '*' can only be used at the end (e.g., 'en-us,en,*').
-    ///
-    /// - `domain`: Filter entities based on domains they are available on.
-    pub async fn sub_genre_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<SubGenre<'a>> {
+    pub async fn sub_genre_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<SubGenre> {
         self.details("classifications/subgenres",id,locale,domain).await
     }
 
-    /// Get Segment Details
-    ///
-    /// Get details for a specific segment using its unique identifier.
-    ///
-    /// # Endpoint
-    /// `/discovery/v2/classifications/segment/{id}`
-    ///
-    /// ## Parameters
-    ///
-    /// - `id` : ID of the sub-genre.
-    ///
-    /// - `locale` : The locale in ISO code format. Multiple comma-separated values can be provided. When omitting the country part of the code (e.g., only 'en' or 'fr'), then the first matching locale is used. When using a '*' it matches all locales. '*' can only be used at the end (e.g., 'en-us,en,*').
-    ///
-    /// - `domain`: Filter entities based on domains they are available on.
-    pub async fn segment_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Segment<'a>> {
+    pub async fn segment_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Segment> {
         self.details("classifications/segment",id,locale,domain).await
     }
-
-    pub async fn event_details(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Event<'a>> {
-        self.details("events",id,locale,domain).await
-    }
-
-    /*pub async fn event_images(&self,id : &str,locale : Option<&str>,domain : &[&str]) -> Option<Vec<ImageInfo<'a>>> {
-        let format = format!("events/{}",id);
-        self.details(&format,"images",locale,domain)
-    }*/
 }
