@@ -16,3 +16,4 @@ api-request-utils-rs =  "0.2.0"
 
 [features]
 inventory = []
+discovery = []

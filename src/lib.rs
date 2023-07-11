@@ -11,7 +11,6 @@
     unused_results,
     unused_allocation,
     unused_must_use,
-    unused_import_braces,
 
     unreachable_patterns,
 
@@ -25,11 +24,17 @@
 mod structs;
 mod enums;
 
+#[cfg(feature = "inventory")]
+mod inventory;
+
+#[cfg(feature = "discovery")]
+mod discovery;
+
 pub use self::structs::*;
 pub use self::enums::*;
 
 #[cfg(feature = "inventory")]
-mod inventory;
-
-#[cfg(feature = "inventory")]
 pub use self::inventory::*;
+
+#[cfg(feature = "discovery")]
+pub use self::discovery::*;
