@@ -3,6 +3,9 @@ use api_request_utils_rs::serde::{Deserialize,Serialize};
 /// Enum representing the ticket availability status.
 ///
 /// This enum is used to indicate the availability of tickets through primary channels.
+#[derive(Debug)]
+#[derive(PartialOrd, Ord, PartialEq, Eq)]
+#[derive(Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[serde(crate = "api_request_utils_rs::serde")]
@@ -20,6 +23,9 @@ pub enum TicketAvailability {
 /// Enum representing the resale ticket availability status.
 ///
 /// This enum is used to indicate the availability of tickets through resale channels.
+#[derive(Debug)]
+#[derive(PartialOrd, Ord, PartialEq, Eq)]
+#[derive(Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[serde(crate = "api_request_utils_rs::serde")]

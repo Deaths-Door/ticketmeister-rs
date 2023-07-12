@@ -9,6 +9,9 @@ use crate::{
 ///
 /// This struct contains information about the event ID and the availability statuses
 /// for both primary and resale tickets.
+#[derive(Debug)]
+#[derive(PartialOrd, Ord, PartialEq, Eq)]
+#[derive(Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")]
 pub struct InventoryStatus {

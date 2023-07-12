@@ -1,25 +1,26 @@
 use api_request_utils_rs::{
     ParameterHashMap,
-    serde_json::Value
+    serde_json::{
+        Value,
+        to_value
+    }
 };
-
 
 use crate::{
-    Decision,
-    Source,
     Unit,
+    Market,
     SortingOrder,
-    ClassificationName
+    ClassificationName,
+    Dma,
+    Decision,
 };
-pub struct SearchQuery<'a>(ParameterHashMap<'a>);
+
+pub struct SearchQuery<'a>(&'a ParameterHashMap<'a>);
 
 impl<'a> SearchQuery<'a> {
     pub fn new() -> Self {
-        Self(ParameterHashMap::new())
-    }
-
-    pub(super) fn hashmap(&self) -> &ParameterHashMap {
-        &self.0
+        let hashmap = ParameterHashMap::new();
+        Self(&hashmap)
     }
 
     /// Filter entities by its id
@@ -57,14 +58,10 @@ impl<'a> SearchQuery<'a> {
         self.0.insert("radius", Value::from(radius));
         self
     }
+
     /// Unit of the radius
     pub fn with_unit(mut self, unit: Unit) -> Self {
-        self.0.insert("unit", Value::from(unit));
-        self
-    }
-    /// Filter entities by its primary source name OR publishing source name
-    pub fn with_source(mut self, source: Source) -> Self {
-        self.0.insert("source", Value::from(source));
+        self.0.insert("unit", to_value(unit).unwrap());
         self
     }
 
@@ -73,9 +70,10 @@ impl<'a> SearchQuery<'a> {
         self.0.insert("locale", Value::from(locale));
         self
     }
+
     /// Filter by market id
     pub fn with_market(mut self, market: Market) -> Self {
-        self.0.insert("marketId", Value::from(market));
+        self.0.insert("marketId", to_value(market).unwrap());
         self
     }
 
@@ -90,15 +88,16 @@ impl<'a> SearchQuery<'a> {
         self.0.insert("endDateTime", Value::from(end_date_time));
         self
     }
-    /// yes, to include with date to be announce (TBA)
-    pub fn with_include_tba(mut self, include_tba: Decision) -> Self {
-        self.0.insert("includeTBA", Value::from(include_tba));
+
+      /// yes, to include with date to be announce (TBA)
+      pub fn with_include_tba(mut self, include_tba: Decision) -> Self {
+        self.0.insert("includeTBA", to_value(include_tba).unwrap());
         self
     }
 
     /// yes, to include with a date to be defined (TBD)
     pub fn with_include_tbd(mut self, include_tbd: Decision) -> Self {
-        self.0.insert("includeTBD", Value::from(include_tbd));
+        self.0.insert("includeTBD", to_value(include_tbd).unwrap());
         self
     }
 
@@ -115,7 +114,7 @@ impl<'a> SearchQuery<'a> {
     }
 
     pub fn with_sort(mut self, sort: SortingOrder) -> Self {
-        self.0.insert("sort", Value::from(sort));
+        self.0.insert("sort", to_value(sort).unwrap());
         self
     }
 
@@ -145,7 +144,7 @@ impl<'a> SearchQuery<'a> {
     }
 
     pub fn with_classification_name(mut self, classification_name: ClassificationName) -> Self {
-        self.0.insert("classificationName", Value::from(classification_name));
+        self.0.insert("classificationName", to_value(classification_name).unwrap());
         self
     }
 
@@ -185,7 +184,7 @@ impl<'a> SearchQuery<'a> {
     }
 
     pub fn with_dma(mut self, dma: Dma) -> Self {
-        self.0.insert("dmaId", Value::from((dma)));
+        self.0.insert("dmaId", to_value(dma).unwrap());
         self
     }
 
@@ -210,7 +209,7 @@ impl<'a> SearchQuery<'a> {
     }
 
     pub fn with_include_family(mut self, include_family: Decision) -> Self {
-        self.0.insert("includeFamily", Value::from(include_family));
+        self.0.insert("includeFamily", to_value(include_family).unwrap());
         self
     }
 
@@ -257,7 +256,7 @@ impl<'a> SearchQuery<'a> {
     }
 
     pub fn with_include_spellcheck(mut self, include_spellcheck: Decision) -> Self {
-        self.0.insert("includeSpellcheck", Value::from(include_spellcheck));
+        self.0.insert("includeSpellcheck", to_value(include_spellcheck).unwrap());
         self
     }
 
