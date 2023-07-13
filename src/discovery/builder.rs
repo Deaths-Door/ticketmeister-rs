@@ -15,9 +15,277 @@ use crate::{
     Decision,
 };
 
-pub struct SearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
+pub struct EventSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
+pub struct AttractionSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
+pub struct ClassificationSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
+pub struct VenueSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
 
-impl<'a> SearchQuery<'a> {
+impl<'a> VenueSearchQuery<'a> {
+    pub fn new() -> Self {
+        let hashmap = ParameterHashMap::new();
+        Self(&hashmap)
+    }
+    /// Filter entities by its id
+    pub fn with_id(mut self, id: &'a str) -> Self {
+        self.0.insert("id", Value::from(id));
+        self
+    }
+
+    /// Keyword to search on	
+    pub fn with_keyword(mut self, keyword: &'a str) -> Self {
+        self.0.insert("keyword", Value::from(keyword));
+        self
+    }
+
+    /// Radius of the area in which we want to search for events.
+    pub fn with_radius(mut self, radius: u16) -> Self {
+        self.0.insert("radius", Value::from(radius));
+        self
+    }
+
+    /// Unit of the radius
+    pub fn with_unit(mut self, unit: Unit) -> Self {
+        self.0.insert("unit", to_value(unit).unwrap());
+        self
+    }
+
+    /// The locale in ISO code format. Multiple comma-separated values can be provided. When omitting the country part of the code (e.g. only 'en' or 'fr') then the first matching locale is used. When using a '*' it matches all locales. '*' can only be used at the end (e.g. 'en-us,en,*')
+    pub fn with_locale(mut self, locale: &'a str) -> Self {
+        self.0.insert("locale", Value::from(locale));
+        self
+    }
+
+    pub fn with_country_code(mut self, country_code: &'a str) -> Self {
+        self.0.insert("countryCode", Value::from(country_code));
+        self
+    }
+
+    pub fn with_state_code(mut self, state_code: &'a str) -> Self {
+        self.0.insert("stateCode", Value::from(state_code));
+        self
+    }
+     /// Page size of the response 
+     pub fn with_size(mut self, size: u16) -> Self {
+        self.0.insert("size", Value::from(size));
+        self
+    }  
+
+    /// Page number
+    pub fn with_page(mut self, page: u16) -> Self {
+        self.0.insert("page", Value::from(page));
+        self
+    }
+    /// Sorting order of the search result.
+    pub fn with_sort(mut self, sort: SortingOrder) -> Self {
+        self.0.insert("sort", to_value(sort).unwrap());
+        self
+    }
+
+    pub fn with_geo_point(mut self, geo_point: &'a str) -> Self {
+        self.0.insert("geoPoint", Value::from(geo_point));
+        self
+    }
+
+    /// Popularity boost by country, default is us.
+    pub fn with_preferred_country_is_usa(mut self, result : bool) -> Self {
+        let string = if result {
+            "usa"
+        }
+        else {
+            "ca"
+        };
+
+        self.0.insert("preferredCountry", Value::from(string));
+        self
+    }
+
+    /// yes, to include spell check suggestions in the response.
+    pub fn with_include_spellcheck(mut self, include_spellcheck: Decision) -> Self {
+        self.0.insert("includeSpellcheck", to_value(include_spellcheck).unwrap());
+        self
+    }
+
+    /// Filter entities based on domains they are available on
+    pub fn with_domain(mut self, domain: &'a [&'a str]) -> Self {
+        self.0.insert("domain", Value::from(domain));
+        self
+    }
+}
+
+impl<'a> ClassificationSearchQuery<'a> {
+    pub fn new() -> Self {
+        let hashmap = ParameterHashMap::new();
+        Self(&hashmap)
+    }
+
+    /// Filter entities by its id
+    pub fn with_id(mut self, id: &'a str) -> Self {
+        self.0.insert("id", Value::from(id));
+        self
+    }
+
+    /// Keyword to search on	
+    pub fn with_keyword(mut self, keyword: &'a str) -> Self {
+        self.0.insert("keyword", Value::from(keyword));
+        self
+    }    
+    /// The locale in ISO code format. Multiple comma-separated values can be provided. When omitting the country part of the code (e.g. only 'en' or 'fr') then the first matching locale is used. When using a '*' it matches all locales. '*' can only be used at the end (e.g. 'en-us,en,*')
+     pub fn with_locale(mut self, locale: &'a str) -> Self {
+        self.0.insert("locale", Value::from(locale));
+        self
+    }
+
+    /// Page size of the response 
+    pub fn with_size(mut self, size: u16) -> Self {
+        self.0.insert("size", Value::from(size));
+        self
+    }  
+
+    /// Page number
+    pub fn with_page(mut self, page: u16) -> Self {
+        self.0.insert("page", Value::from(page));
+        self
+    }
+
+    /// Sorting order of the search result.
+    pub fn with_sort(mut self, sort: SortingOrder) -> Self {
+        self.0.insert("sort", to_value(sort).unwrap());
+        self
+    }
+
+    
+    /// Popularity boost by country, default is us.
+    pub fn with_preferred_country_is_usa(mut self, result : bool) -> Self {
+        let string = if result {
+            "usa"
+        }
+        else {
+            "ca"
+        };
+
+        self.0.insert("preferredCountry", Value::from(string));
+        self
+    }
+
+    /// yes, to include spell check suggestions in the response.
+    pub fn with_include_spellcheck(mut self, include_spellcheck: Decision) -> Self {
+        self.0.insert("includeSpellcheck", to_value(include_spellcheck).unwrap());
+        self
+    }
+
+    /// Filter entities based on domains they are available on
+    pub fn with_domain(mut self, domain: &'a [&'a str]) -> Self {
+        self.0.insert("domain", Value::from(domain));
+        self
+    }
+}
+
+impl<'a> AttractionSearchQuery<'a> {
+    pub fn new() -> Self {
+        let hashmap = ParameterHashMap::new();
+        Self(&hashmap)
+    }
+
+    
+    /// Filter entities by its id
+    pub fn with_id(mut self, id: &'a str) -> Self {
+        self.0.insert("id", Value::from(id));
+        self
+    }
+
+    /// Keyword to search on	
+    pub fn with_keyword(mut self, keyword: &'a str) -> Self {
+        self.0.insert("keyword", Value::from(keyword));
+        self
+    }
+
+    /// The locale in ISO code format. Multiple comma-separated values can be provided. When omitting the country part of the code (e.g. only 'en' or 'fr') then the first matching locale is used. When using a '*' it matches all locales. '*' can only be used at the end (e.g. 'en-us,en,*')
+    pub fn with_locale(mut self, locale: &'a str) -> Self {
+        self.0.insert("locale", Value::from(locale));
+        self
+    }
+
+    /// Page size of the response 
+    pub fn with_size(mut self, size: u16) -> Self {
+        self.0.insert("size", Value::from(size));
+        self
+    }  
+
+    /// Page number
+    pub fn with_page(mut self, page: u16) -> Self {
+        self.0.insert("page", Value::from(page));
+        self
+    }
+
+    /// Sorting order of the search result.
+    pub fn with_sort(mut self, sort: SortingOrder) -> Self {
+        self.0.insert("sort", to_value(sort).unwrap());
+        self
+    }
+
+    /// Filter attractions by classification name
+    pub fn with_classification_name(mut self, classification_name: ClassificationName) -> Self {
+        self.0.insert("classificationName", to_value(classification_name).unwrap());
+        self
+    }
+
+    /// Filter attractions by classification id
+    pub fn with_classification_id(mut self, classification_id: &'a[&'a str]) -> Self {
+        self.0.insert("classificationId", Value::from(classification_id));
+        self
+    }
+
+    /// Filter by classification that are family-friendly
+    pub fn with_include_family(mut self, include_family: Decision) -> Self {
+        self.0.insert("includeFamily", to_value(include_family).unwrap());
+        self
+    }
+    
+    /// Filter attractions by segmentId   
+    pub fn with_segment_id(mut self, segment: &'a str) -> Self {
+        self.0.insert("segmentId", Value::from(segment));
+        self
+    } 
+
+    /// Filter attractions by genreId
+    pub fn with_genre_id(mut self, genre_id: &'a [&'a str]) -> Self {
+        self.0.insert("genreId", Value::from(genre_id));
+        self
+    }
+
+    /// Filter attractions by subGenreId
+    pub fn with_sub_genre_id(mut self, sub_genre_id: &'a [&'a str]) -> Self {
+        self.0.insert("subGenreId", Value::from(sub_genre_id));
+        self
+    }
+
+    /// 	Filter attractions by typeId
+    pub fn with_type_id(mut self, type_id: &'a [&'a str]) -> Self {
+        self.0.insert("typeId", Value::from(type_id));
+        self
+    }
+
+    ///Filter attractions by subTypeId
+    pub fn with_sub_type_id(mut self, sub_type_id: &'a [&'a str]) -> Self {
+        self.0.insert("subTypeId", Value::from(sub_type_id));
+        self
+    }
+
+    /// Popularity boost by country, default is us.
+    pub fn with_preferred_country_is_usa(mut self, result : bool) -> Self {
+        let string = if result {
+            "usa"
+        }
+        else {
+            "ca"
+        };
+
+        self.0.insert("preferredCountry", Value::from(string));
+        self
+    }
+}
+
+impl<'a> EventSearchQuery<'a> {
     pub fn new() -> Self {
         let hashmap = ParameterHashMap::new();
         Self(&hashmap)
@@ -112,7 +380,7 @@ impl<'a> SearchQuery<'a> {
         self.0.insert("page", Value::from(page));
         self
     }
-
+    /// Sorting order of the search result.
     pub fn with_sort(mut self, sort: SortingOrder) -> Self {
         self.0.insert("sort", to_value(sort).unwrap());
         self
@@ -143,11 +411,13 @@ impl<'a> SearchQuery<'a> {
         self
     }
 
+    /// Filter attractions by classification name
     pub fn with_classification_name(mut self, classification_name: ClassificationName) -> Self {
         self.0.insert("classificationName", to_value(classification_name).unwrap());
         self
     }
 
+    /// Filter attractions by classification id
     pub fn with_classification_id(mut self, classification_id: &'a[&'a str]) -> Self {
         self.0.insert("classificationId", Value::from(classification_id));
         self
@@ -208,6 +478,7 @@ impl<'a> SearchQuery<'a> {
         self
     }
 
+    /// Filter by classification that are family-friendly
     pub fn with_include_family(mut self, include_family: Decision) -> Self {
         self.0.insert("includeFamily", to_value(include_family).unwrap());
         self
@@ -218,21 +489,25 @@ impl<'a> SearchQuery<'a> {
         self
     }
 
+    /// Filter attractions by genreId
     pub fn with_genre_id(mut self, genre_id: &'a [&'a str]) -> Self {
         self.0.insert("genreId", Value::from(genre_id));
         self
     }
 
+    /// Filter attractions by subGenreId
     pub fn with_sub_genre_id(mut self, sub_genre_id: &'a [&'a str]) -> Self {
         self.0.insert("subGenreId", Value::from(sub_genre_id));
         self
     }
 
+    /// 	Filter attractions by typeId
     pub fn with_type_id(mut self, type_id: &'a [&'a str]) -> Self {
         self.0.insert("typeId", Value::from(type_id));
         self
     }
 
+    ///Filter attractions by subTypeId
     pub fn with_sub_type_id(mut self, sub_type_id: &'a [&'a str]) -> Self {
         self.0.insert("subTypeId", Value::from(sub_type_id));
         self
@@ -243,6 +518,7 @@ impl<'a> SearchQuery<'a> {
         self
     }
 
+    /// Popularity boost by country, default is us.
     pub fn with_preferred_country_is_usa(mut self, result : bool) -> Self {
         let string = if result {
             "usa"
@@ -255,11 +531,13 @@ impl<'a> SearchQuery<'a> {
         self
     }
 
+    /// yes, to include spell check suggestions in the response.
     pub fn with_include_spellcheck(mut self, include_spellcheck: Decision) -> Self {
         self.0.insert("includeSpellcheck", to_value(include_spellcheck).unwrap());
         self
     }
 
+    /// Filter entities based on domains they are available on
     pub fn with_domain(mut self, domain: &'a [&'a str]) -> Self {
         self.0.insert("domain", Value::from(domain));
         self
