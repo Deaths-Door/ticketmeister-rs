@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 
 use api_request_utils_rs::{
     RequestInfo,
@@ -15,14 +16,21 @@ use api_request_utils_rs::{
     serde_json::{
         Value,
         from_value
-    }
+    },
+    serde::de::DeserializeOwned
 };
 
 use crate::{
     Source,
     SearchQuery,
     Page,
-    Event
+    Event,
+    Image,
+    Attraction,
+    Classification,
+    Genre,
+    SubGenre,
+    Segment
 };
 
 impl RequestInfo for Discovery<'_> {
@@ -54,6 +62,7 @@ pub struct Discovery<'a> {
     error_handler : &'a ErrorHandler<Value>
 }
 
+/// attraction search ,venue search , event search, classifications search
 impl<'a> Discovery<'a> {
  /// Creates a new `Discovery` instance.
     ///
@@ -76,16 +85,61 @@ impl<'a> Discovery<'a> {
         }
     }
 
-    fn embedded(value : &Value) -> Value {
-        *value.get("_embedded").unwrap()
-    }
-
-    pub async fn search_events(&self,query : SearchQuery<'_>,source : Source) {
-        let value = self.get_request_handler::<Value,Value>("events",query.0,self.error_handler).await;
-        value.and_then(|json|{
-            let page : Page = from_value(*json.get("page").unwrap()).unwrap();
-            let events : Vec<Event> = from_value(*embedded(&json).get("events").unwrap()).unwrap();
-            (events,page)
+    async fn embedded_details<K,V>(result : Option<Value>,array_name : &str) -> Option<(K,Vec<V>)> where K: DeserializeOwned , V: DeserializeOwned {
+        result.and_then(|value|{
+            let key : K = from_value(value.clone()).unwrap();
+            let vector : Vec<V> = from_value(value.get("_embedded").unwrap().get(array_name).unwrap().clone()).unwrap();
+            Some((key,vector))
         })
     }
+
+
+    pub async fn search_events(&self,query : SearchQuery<'_>,source : Source) -> Option<(Page,Vec<Event>)> {
+        let value = self.get_request_handler::<Value,Value>("events",query.0,self.error_handler).await;
+        Self::embedded_details(value,"events").await
+    }
+
+    async fn details<T>(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<T> where T: DeserializeOwned {
+        let joined_endpoint = format!("{}/{}",endpoint,id);
+        let parameters = HashMap::from([("locale",Value::from(locale)),("domain",Value::from(domain))]);
+        self.get_request_handler(&joined_endpoint, parameters, self.error_handler).await
+    }
+
+    pub async fn event_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<Event> {
+        self.details("events",id,locale,domain).await
+    }
+
+    pub async fn event_images(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<Image> {
+        let format = format!("events/{}",id);
+        self.details(&format,"images",locale,domain).await
+    }
+
+    pub async fn attraction_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<Attraction> {
+        self.details("attractions",id,locale,domain).await
+    }
+
+    pub async fn classification_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<Classification> {
+        self.details("classifications",id,locale,domain).await
+    }
+
+    /// genre , related subgenres
+    pub async fn genre_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<(Genre,Vec<SubGenre>)> {
+        let result = self.details::<Value>("classifications/genres",id,locale,domain).await;
+        Self::embedded_details(result,"subgenres").await
+    }
+
+    /// segment , related genres
+    pub async fn segment_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<(Segment,Vec<Genre>)> {
+        let result = self.details::<Value>("classifications/segments",id,locale,domain).await;
+        Self::embedded_details(result,"genres").await
+    }
+
+    pub async fn subgenre_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<SubGenre> {
+        self.details("classifications/subgenres",id,locale,domain).await
+    }
+
+    pub async fn venue_details(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>) -> Option<Classification> {
+        self.details("venues",id,locale,domain).await
+    }
+
 }
