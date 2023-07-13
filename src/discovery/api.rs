@@ -20,7 +20,9 @@ use api_request_utils_rs::{
 
 use crate::{
     Source,
-
+    SearchQuery,
+    Page,
+    Event
 };
 
 impl RequestInfo for Discovery<'_> {
@@ -45,7 +47,6 @@ impl RequestDefaults for Discovery<'_> {
 
 impl RequestHandler for Discovery<'_> {}
 
-todo add source to each function instead of adding it in query
 /// The Ticketmaster Discovery API allows you to search for events, attractions, or venues.
 pub struct Discovery<'a> {
     client : Client,
@@ -75,7 +76,16 @@ impl<'a> Discovery<'a> {
         }
     }
 
-    pub async fn search_events(&self,query : SearchQuery,source : Source) {
-        
+    fn embedded(value : &Value) -> Value {
+        *value.get("_embedded").unwrap()
+    }
+
+    pub async fn search_events(&self,query : SearchQuery<'_>,source : Source) {
+        let value = self.get_request_handler::<Value,Value>("events",query.0,self.error_handler).await;
+        value.and_then(|json|{
+            let page : Page = from_value(*json.get("page").unwrap()).unwrap();
+            let events : Vec<Event> = from_value(*embedded(&json).get("events").unwrap()).unwrap();
+            (events,page)
+        })
     }
 }

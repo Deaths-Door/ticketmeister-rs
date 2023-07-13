@@ -15,7 +15,7 @@ use crate::{
     Decision,
 };
 
-pub struct SearchQuery<'a>(&'a ParameterHashMap<'a>);
+pub struct SearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
 
 impl<'a> SearchQuery<'a> {
     pub fn new() -> Self {

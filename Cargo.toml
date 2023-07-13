@@ -15,5 +15,6 @@ keywords = ["ticketmaster","api","concerts","search","music"]
 api-request-utils-rs =  "0.2.0"
 
 [features]
+default = []
 inventory = []
 discovery = []

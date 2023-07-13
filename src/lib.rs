@@ -21,6 +21,10 @@
     overflowing_literals,
 )]
 
+
+#[cfg(not(feature = "default"))]
+compile_error!("No features enabled. Please enable at least one feature or else remove this from your project.");
+
 #[cfg(feature = "inventory")]
 mod inventory;
 

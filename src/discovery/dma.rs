@@ -16,11 +16,11 @@ impl Dma {
         Self { id, name }
     }
 
-    fn id(&self) -> &u16 {
+    pub fn id(&self) -> &u16 {
         &self.id
     }
 
-    fn name(&self) -> &str {
+    pub fn name(&self) -> &str {
         &self.name
     }
 }
