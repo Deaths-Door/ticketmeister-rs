@@ -7,7 +7,8 @@ This repository provides a Rust implementation for integrating the Ticketmaster 
 
 ## Features
 
-- 'inventory' : Enables usage of the [Inventory API](https://developer.ticketmaster.com/products-and-docs/apis/inventory-status/) which  provides event status for primary Ticketmaster inventory with inventory updates happening near real-time.
+- `inventory` : Enables usage of the [Inventory API](https://developer.ticketmaster.com/products-and-docs/apis/inventory-status/) which provides event status for primary Ticketmaster inventory with inventory updates happening near real-time.
+- `discovery` : Enables usage of the [Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/) which allows you to search for events, attractions, or venues. provides event status for primary Ticketmaster inventory with inventory updates happening near real-time
 
 ## Usage
 
