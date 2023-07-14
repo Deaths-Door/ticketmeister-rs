@@ -30,15 +30,14 @@ pub struct Inventory<'a> {
 
 impl RequestInfo for Inventory<'_> {
     const BASE_URL : &'static str = "https://app.ticketmaster.com/inventory-status/v1";
+    fn client(&self) -> &Client {
+        &self.client
+    }
 }
 
 impl RequestModifiers for Inventory<'_> {}
 
-impl RequestDefaults for Inventory<'_> { 
-    fn client(&self) -> &Client {
-        &self.client
-    }
-    
+impl RequestDefaults for Inventory<'_> {     
     fn default_parameters(&self,request_builder: RequestBuilder) -> RequestBuilder {
         request_builder.query(&[("apikey", self.api_key)])
     }
@@ -74,6 +73,6 @@ impl<'a> Inventory<'a> {
     /// It takes a slice of event IDs and returns an optional `InventoryStatus` indicating the status of the inventory.
     pub async fn inventory_status(&self, event_ids: &[u32]) -> Option<InventoryStatus> {
         let parameters = std::collections::HashMap::from([("track_isrc", Value::from(event_ids))]);
-        self.get_request_handler::<InventoryStatus, ()>("availability", parameters, self.error_handler).await
+        self.get_request_handler::<InventoryStatus, ()>("availability", &parameters, self.error_handler).await
     }
 }

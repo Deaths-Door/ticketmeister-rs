@@ -15,15 +15,15 @@ use crate::{
     Decision,
 };
 
-pub struct EventSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
-pub struct AttractionSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
-pub struct ClassificationSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
-pub struct VenueSearchQuery<'a>(pub(super) &'a ParameterHashMap<'a>);
+pub struct EventSearchQuery<'a>(pub(super) ParameterHashMap<'a>);
+pub struct AttractionSearchQuery<'a>(pub(super) ParameterHashMap<'a>);
+pub struct ClassificationSearchQuery<'a>(pub(super) ParameterHashMap<'a>);
+pub struct VenueSearchQuery<'a>(pub(super) ParameterHashMap<'a>);
 
 impl<'a> VenueSearchQuery<'a> {
     pub fn new() -> Self {
         let hashmap = ParameterHashMap::new();
-        Self(&hashmap)
+        Self(hashmap)
     }
     /// Filter entities by its id
     pub fn with_id(mut self, id: &'a str) -> Self {
@@ -115,7 +115,7 @@ impl<'a> VenueSearchQuery<'a> {
 impl<'a> ClassificationSearchQuery<'a> {
     pub fn new() -> Self {
         let hashmap = ParameterHashMap::new();
-        Self(&hashmap)
+        Self(hashmap)
     }
 
     /// Filter entities by its id
@@ -183,7 +183,7 @@ impl<'a> ClassificationSearchQuery<'a> {
 impl<'a> AttractionSearchQuery<'a> {
     pub fn new() -> Self {
         let hashmap = ParameterHashMap::new();
-        Self(&hashmap)
+        Self(hashmap)
     }
 
     
@@ -288,7 +288,7 @@ impl<'a> AttractionSearchQuery<'a> {
 impl<'a> EventSearchQuery<'a> {
     pub fn new() -> Self {
         let hashmap = ParameterHashMap::new();
-        Self(&hashmap)
+        Self(hashmap)
     }
 
     /// Filter entities by its id

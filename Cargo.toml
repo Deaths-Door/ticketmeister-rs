@@ -12,9 +12,10 @@ license = "MIT OR Apache-2.0"
 keywords = ["ticketmaster","api","concerts","search","music"]
 
 [dependencies]
-api-request-utils-rs =  "0.2.0"
+api-request-utils-rs =  "0.2.1"
+lazy_static = { version = "1.4.0", optional = true }
 
 [features]
 default = []
 inventory = []
-discovery = []
+discovery = ["dep:lazy_static"]

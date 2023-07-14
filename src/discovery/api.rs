@@ -41,6 +41,10 @@ use crate::{
 
 impl RequestInfo for Discovery<'_> {
     const BASE_URL : &'static str = "https://app.ticketmaster.com/discovery/v2";
+    
+    fn client(&self) -> &Client {
+        &self.client
+    }
 }
 
 impl RequestModifiers for Discovery<'_> {
@@ -50,10 +54,6 @@ impl RequestModifiers for Discovery<'_> {
 }
 
 impl RequestDefaults for Discovery<'_> { 
-    fn client(&self) -> &Client {
-        &self.client
-    }
-    
     fn default_parameters(&self,request_builder: RequestBuilder) -> RequestBuilder {
         request_builder.query(&[("apikey", self.api_key)])
     }
@@ -91,11 +91,8 @@ impl<'a> Discovery<'a> {
         }
     }
 
-    fn insert_source(hashmap : ParameterHashMap<'_>,source : Option<Source>) -> ParameterHashMap<'_> {
-        let mut new = ParameterHashMap::with_capacity(hashmap.capacity() + 1);
-        new.extend(hashmap);
-        new.insert("source",to_value(source).unwrap());
-        new
+    fn insert_source<'l>(hashmap : &mut ParameterHashMap<'l>,source : Option<Source>) {
+        hashmap.insert("source",to_value(source).unwrap());
     }
 
     async fn embedded_details<K,V>(result : Option<Value>,array_name : &str) -> Option<(K,Vec<V>)> where K: DeserializeOwned , V: DeserializeOwned {
@@ -106,47 +103,51 @@ impl<'a> Discovery<'a> {
         })
     }
 
-    pub async fn search_events(&self,query : EventSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Event>)> {
-        let value = self.get_request_handler::<Value,Value>("events",Self::insert_source(query.0,source),self.error_handler).await;
+    pub async fn search_events(&self,query : &mut EventSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Event>)> {
+        Self::insert_source(&mut query.0,source);
+        let value = self.get_request_handler::<Value,Value>("events",&query.0,self.error_handler).await;
         Self::embedded_details(value,"events").await
     }
 
-    pub async fn search_attractions(&self,query : AttractionSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Attraction>)> {
-        let value = self.get_request_handler::<Value,Value>("attractions",Self::insert_source(query.0,source),self.error_handler).await;
+    pub async fn search_attractions(&self,query : &mut AttractionSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Attraction>)> {
+        Self::insert_source(&mut query.0,source);
+        let value = self.get_request_handler::<Value,Value>("attractions",&query.0,self.error_handler).await;
         Self::embedded_details(value,"attractions").await
     }
 
-    pub async fn search_classifications(&self,query : ClassificationSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Classification>)> {
-        let value = self.get_request_handler::<Value,Value>("classifications",Self::insert_source(query.0,source),self.error_handler).await;
+    pub async fn search_classifications(&self,query : &mut ClassificationSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Classification>)> {
+        Self::insert_source(&mut query.0,source);
+        let value = self.get_request_handler::<Value,Value>("classifications",&query.0,self.error_handler).await;
         Self::embedded_details(value,"classifications").await
     }
 
-    pub async fn search_venues(&self,query : VenueSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Venue>)> {
-        let value = self.get_request_handler::<Value,Value>("venues",Self::insert_source(query.0,source),self.error_handler).await;
+    pub async fn search_venues(&self,query : &mut VenueSearchQuery<'_>,source : Option<Source>) -> Option<(Page,Vec<Venue>)> {
+        Self::insert_source(&mut query.0,source);
+        let value = self.get_request_handler::<Value,Value>("venues",&query.0,self.error_handler).await;
         Self::embedded_details(value,"venues").await
     }
 
     async fn details<T>(&self,endpoint : &str,id : &str,locale : Option<&str>,domain : Option<&[&str]>,source : Option<Source>) -> Option<T> where T: DeserializeOwned {
         let joined_endpoint = format!("{}/{}",endpoint,id);
         let parameters = HashMap::from([("locale",Value::from(locale)),("domain",Value::from(domain)),("source",to_value(source).unwrap())]);
-        self.get_request_handler(&joined_endpoint, parameters, self.error_handler).await
+        self.get_request_handler(&joined_endpoint, &parameters, self.error_handler).await
     }
 
     pub async fn event_details(&self,id : &str,locale : Option<&str>,domain : Option<&[&str]>,source : Option<Source>) -> Option<Event> {
-        self.details("events",id,locale,domain,source ).await
+        self.details("events",id,locale,domain,source).await
     }
 
     pub async fn event_images(&self,id : &str,locale : Option<&str>,domain : Option<&[&str]>,source : Option<Source>) -> Option<Image> {
         let format = format!("events/{}",id);
-        self.details(&format,"images",locale,domain,source ).await
+        self.details(&format,"images",locale,domain,source).await
     }
 
     pub async fn attraction_details(&self,id : &str,locale : Option<&str>,domain : Option<&[&str]>,source : Option<Source>) -> Option<Attraction> {
-        self.details("attractions",id,locale,domain,source ).await
+        self.details("attractions",id,locale,domain,source).await
     }
 
     pub async fn classification_details(&self,id : &str,locale : Option<&str>,domain : Option<&[&str]>,source : Option<Source>) -> Option<Classification> {
-        self.details("classifications",id,locale,domain,source ).await
+        self.details("classifications",id,locale,domain,source).await
     }
 
     /// genre , related subgenres

@@ -169,25 +169,25 @@ pub struct Dates {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Start {
     #[serde(rename = "localDate")]
-    local_date: String,
+    pub local_date: String,
 
     #[serde(rename = "localTime")]
-    local_time: String,
+    pub local_time: String,
 
     #[serde(rename = "dateTime")]
-    date_time: String,
+    pub date_time: String,
 
     #[serde(rename = "dateTBD")]
-    date_tbd: bool,
+    pub date_tbd: bool,
 
     #[serde(rename = "dateTBA")]
-    date_tba: bool,
+    pub date_tba: bool,
 
     #[serde(rename = "timeTBA")]
-    time_tba: bool,
+    pub time_tba: bool,
 
     #[serde(rename = "noSpecificTime")]
-    no_specific_time: bool,
+    pub no_specific_time: bool,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -195,22 +195,22 @@ pub struct Start {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Classification {
     #[serde(rename = "primary")]
-    is_primary: bool,
+    pub is_primary: bool,
 
-    segment: Genre,
+    pub segment: Genre,
 
-    genre: Genre,
+    pub genre: Genre,
 
     #[serde(rename = "subGenre")]
-    sub_genre: Genre,
+    pub sub_genre: Genre,
 
-    r#type : Type,
+    pub r#type : Type,
 
     #[serde(rename = "subType")]
-    sub_type: Genre,
+    pub sub_type: Genre,
 
     #[serde(rename = "family")]
-    is_family: bool,
+    pub is_family: bool,
 }
 
 
@@ -218,7 +218,7 @@ pub struct Classification {
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
-pub struct SubGenre(Info);
+pub struct SubGenre(pub Info);
 
 /// Represents a genre.
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -237,7 +237,7 @@ pub struct Genre {
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
-pub struct Segment(Info);
+pub struct Segment(pub Info);
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
@@ -259,14 +259,9 @@ pub struct SubType(Info);
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Promoter {
-    #[serde(rename = "id")]
-    id: String,
-
-    #[serde(rename = "name")]
-    name: String,
-
-    #[serde(rename = "description")]
-    description: String,
+    pub id: String,
+    pub name: String,
+    pub description: String,
 }
 
 #[derive(Debug)]
@@ -320,28 +315,17 @@ pub struct Ticketing {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Venue {
     #[serde(flatten)]
-    info : Info,
+    pub info : Info,
 
     #[serde(rename = "test")]
-    test: bool,
-
-    #[serde(rename = "url")]
-    url: String,
-
-    #[serde(rename = "aliases")]
-    aliases: Vec<String>,
-
-    #[serde(rename = "images")]
-    images: Vec<Image>,
-
-    #[serde(rename = "postalCode")]
-    postal_code: String,
-
-    #[serde(rename = "timezone")]
-    timezone: String,
-
+    pub is_test: bool,
+    pub url: String,
+    pub aliases: Vec<String>,
+    pub images: Vec<Image>,
+    pub postal_code: String,
+    pub timezone: String,
     #[serde(rename = "city/name")]
-    city: String,
+    pub city: String,
 
     #[serde(rename = "state")]
     state: State,
@@ -352,10 +336,8 @@ pub struct Venue {
     #[serde(rename = "address")]
     address: Address,
 
-    #[serde(rename = "location")]
     location: Location,
 
-    #[serde(rename = "markets")]
     markets: Vec<Market>,
 
     #[serde(rename = "dmas")]
