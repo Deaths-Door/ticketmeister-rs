@@ -46,51 +46,51 @@ pub struct Info {
 #[serde(crate = "api_request_utils_rs::serde")]
 pub struct Event {
     #[serde(flatten)]
-    info : Info,
+    pub info : Info,
 
     #[serde(rename ="test")]
-    is_test: bool,
+    pub is_test: bool,
 
-    url: String,
+    pub url: String,
 
-    images: Vec<Image>,
+    pub images: Vec<Image>,
 
-    sales: Sales,
+    pub sales: Sales,
 
-    dates: Dates,
+    pub dates: Dates,
 
-    classifications: Vec<Classification>,
+    pub classifications: Vec<Classification>,
 
-    promoter: Promoter,
+    pub promoter: Promoter,
 
-    promoters: Vec<Promoter>,
+    pub promoters: Vec<Promoter>,
 
     #[serde(rename = "pleaseNote")]
-    please_note: String,
+    pub please_note: String,
 
     #[serde(rename = "priceRanges")]
-    price_ranges: Vec<PriceRange>,
+    pub price_ranges: Vec<PriceRange>,
 
-    products: Vec<Product>,
+    pub products: Vec<Product>,
 
     #[serde(rename = "seatmap/static_url")]
-    seatmap: String,
+    pub seatmap: String,
 
-    accessibility: Accessibility,
+    pub accessibility: Accessibility,
 
     #[serde(rename = "ticketLimit/info")]
-    ticket_limit_infomation: String,
+    pub ticket_limit_infomation: String,
 
     #[serde(rename = "ageRestrictions/legalAgeEnforced")]
-    is_legal_age_enforced: bool,
+    pub is_legal_age_enforced: bool,
 
-    ticketing: Ticketing,
+    pub ticketing: Ticketing,
 
     #[serde(rename = "_embedded/venues")]
-    venues: Vec<Venue>,
+    pub venues: Vec<Venue>,
 
     #[serde(rename = "_embedded/attractions")]
-    attractions: Vec<Attraction>,
+    pub attractions: Vec<Attraction>,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -124,12 +124,12 @@ pub struct Sales {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Presale {
     #[serde(rename = "startDateTime")]
-    start_date_time: String,
+    pub start_date_time: String,
 
     #[serde(rename = "endDateTime")]
-    end_date_time: String,
+    pub end_date_time: String,
 
-    name: String,
+    pub name: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -137,31 +137,31 @@ pub struct Presale {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Public {
     #[serde(rename = "startDateTime")]
-    start_date_time: String,
+    pub start_date_time: String,
 
     #[serde(rename = "startTBD")]
-    start_tbd: bool,
+    pub start_tbd: bool,
 
     #[serde(rename = "startTBA")]
-    start_tba: bool,
+    pub start_tba: bool,
 
     #[serde(rename = "endDateTime")]
-    end_date_time: String,
+    pub end_date_time: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Dates {
-    start: Start,
+    pub start: Start,
 
-    timezone: String,
+    pub timezone: String,
 
     #[serde(rename = "status/code")]
-    status: EventStatus,
+    pub status: EventStatus,
 
     #[serde(rename = "spanMultipleDays")]
-    span_multiple_days: bool,
+    pub span_multiple_days: bool,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -268,33 +268,33 @@ pub struct Promoter {
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct PriceRange {
-    currency: String,
-    min: f64,
-    max: f64,
+    pub currency: String,
+    pub min: f64,
+    pub max: f64,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Product {
-    name: String,
-    id: String,
-    url: String,
+    pub name: String,
+    pub id: String,
+    pub url: String,
 
     #[serde(rename = "type")]
-    product_type: String,
+    pub product_type: String,
 
-    classifications: Vec<Classification>,
+    pub classifications: Vec<Classification>,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Accessibility {
-    information : String,
+    pub information : String,
 
     #[serde(rename = "ticketLimit")]
-    ticket_limit: u8
+    pub ticket_limit: u8
 }
 
 
@@ -303,10 +303,10 @@ pub struct Accessibility {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Ticketing {
     #[serde(rename = "safeTix/enabled")]
-    is_safe_tix: bool,
+    pub is_safe_tix: bool,
 
     #[serde(rename = "allInclusivePricing/enabled")]
-    is_all_inclusive_pricing: bool,
+    pub is_all_inclusive_pricing: bool,
 }
 
 
@@ -328,35 +328,35 @@ pub struct Venue {
     pub city: String,
 
     #[serde(rename = "state")]
-    state: State,
+    pub state: State,
 
     #[serde(rename = "country")]
-    country: Country,
+    pub country: Country,
 
     #[serde(rename = "address")]
-    address: Address,
+    pub address: Address,
 
-    location: Location,
+    pub location: Location,
 
-    markets: Vec<Market>,
+    pub markets: Vec<Market>,
 
     #[serde(rename = "dmas")]
-    dmas: Vec<Dma>,
+    pub dmas: Vec<Dma>,
 
     #[serde(rename = "boxOfficeInfo")]
-    box_office_info: BoxOfficeInfo,
+    pub box_office_info: BoxOfficeInfo,
 
     #[serde(rename = "parkingDetail")]
-    parking_detail: String,
+    pub parking_detail: String,
 
     #[serde(rename = "accessibleSeatingDetail")]
-    accessible_seating_detail: String,
+    pub  accessible_seating_detail: String,
 
     #[serde(rename = "generalInfo")]
-    general_info: GeneralInfo,
+    pub general_info: GeneralInfo,
 
     #[serde(rename = "upcomingEvents")]
-    upcoming_events: UpcomingEvents
+    pub upcoming_events: UpcomingEvents
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -364,10 +364,10 @@ pub struct Venue {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Country {
     #[serde(rename = "name")]
-    name: String,
+    pub name: String,
 
     #[serde(rename = "countryCode")]
-    code: String,
+    pub code: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -375,27 +375,27 @@ pub struct Country {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct State {
     #[serde(rename = "name")]
-    name: String,
+    pub name: String,
 
     #[serde(rename = "stateCode")]
-    code: String,
+    pub code: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Address {
-    line1: String,
-    line2: Option<String>,
-    line3: Option<String>,
+    pub line1: String,
+    pub line2: Option<String>,
+    pub line3: Option<String>,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Location {
-    longitude: String,
-    latitude: String,
+    pub longitude: String,
+    pub latitude: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -403,16 +403,16 @@ pub struct Location {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct BoxOfficeInfo {
     #[serde(rename = "phoneNumberDetail")]
-    phone_number_detail: String,
+    pub phone_number_detail: String,
 
     #[serde(rename = "openHoursDetail")]
-    open_hours_detail: String,
+    pub open_hours_detail: String,
 
     #[serde(rename = "acceptedPaymentDetail")]
-    accepted_payment_detail: String,
+    pub accepted_payment_detail: String,
 
     #[serde(rename = "willCallDetail")]
-    will_call_detail: String,
+    pub  will_call_detail: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -420,10 +420,10 @@ pub struct BoxOfficeInfo {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct GeneralInfo {
     #[serde(rename = "generalRule")]
-    general_rule: String,
+    pub general_rule: String,
 
     #[serde(rename = "childRule")]
-    child_rule: String,
+    pub child_rule: String,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -431,15 +431,15 @@ pub struct GeneralInfo {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct UpcomingEvents {
     #[serde(rename = "ticketmaster")]
-    ticketmaster: u32,
+    pub ticketmaster: u32,
 
     #[serde(rename = "_total")]
-    total: u32,
+    pub total: u32,
 
     #[serde(rename = "_filtered")]
-    filtered: u32,
+    pub filtered: u32,
 
-    tmr : Option<u32>
+    pub tmr : Option<u32>
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -447,30 +447,30 @@ pub struct UpcomingEvents {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct Attraction {
     #[serde(flatten)]
-    info : Info,
+    pub info : Info,
 
     #[serde(rename = "type")]
-    attraction_type: String,
+    pub attraction_type: String,
 
     #[serde(rename = "test")]
-    is_test: bool,
+    pub is_test: bool,
 
-    url: String,
+    pub url: String,
 
     #[serde(rename = "externalLinks")]
-    external_links: ExternalLinks,
+    pub external_links: ExternalLinks,
 
     #[serde(rename = "aliases")]
-    aliases: Option<Vec<String>>,
+    pub aliases: Option<Vec<String>>,
 
     #[serde(rename = "images")]
-    images: Vec<Image>,
+    pub images: Vec<Image>,
 
     #[serde(rename = "classifications")]
-    classifications: Vec<Classification>,
+    pub classifications: Vec<Classification>,
 
     #[serde(rename = "upcomingEvents")]
-    upcoming_events : UpcomingEvents,
+    pub upcoming_events : UpcomingEvents,
 }
 
 #[derive(Debug,PartialOrd,Ord,PartialEq,Eq,Hash)]
@@ -478,32 +478,32 @@ pub struct Attraction {
 #[serde(crate = "api_request_utils_rs::serde")] // must be below the derive attribute
 pub struct ExternalLinks {
     #[serde(rename = "youtube")]
-    youtube: Option<Vec<String>>,
+    pub youtube: Option<Vec<String>>,
 
     #[serde(rename = "twitter")]
-    twitter: Option<Vec<String>>,
+    pub twitter: Option<Vec<String>>,
 
     #[serde(rename = "itunes")]
-    itunes: Option<Vec<String>>,
+    pub itunes: Option<Vec<String>>,
 
     #[serde(rename = "lastfm")]
-    lastfm: Option<Vec<String>>,
+    pub lastfm: Option<Vec<String>>,
 
     #[serde(rename = "facebook")]
-    facebook: Vec<String>,
+    pub facebook: Vec<String>,
 
     #[serde(rename = "wiki")]
-    wiki: Option<Vec<String>>,
+    pub wiki: Option<Vec<String>>,
 
     #[serde(rename = "spotify")]
-    spotify: Vec<String>,
+    pub spotify: Vec<String>,
 
     #[serde(rename = "musicbrainz")]
-    musicbrainz: Option<Vec<String>>,
+    pub musicbrainz: Option<Vec<String>>,
 
     #[serde(rename = "instagram")]
-    instagram: Vec<String>,
+    pub instagram: Vec<String>,
 
     #[serde(rename = "homepage")]
-    homepage: Vec<String>,
+    pub  homepage: Vec<String>,
 }
